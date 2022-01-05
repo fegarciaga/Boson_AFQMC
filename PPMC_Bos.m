@@ -10,10 +10,10 @@ W=0;
 E_blk=zeros(N_blk,1); % array to store the energy measured in every block
 W_blk=zeros(N_blk,1); % array to store the total weight in every block
 %% Equilibration phase
+p=parpool('local',2);
 for i_blk=1:N_eqblk
-%     display(i_blk);
     for j_step=1:N_blksteps
-        [Phi, w, O, E, W] = bos_stepwlk(Phi, N_wlk, N_sites, w, O, n_up, n_dn, E, W, K_old, Proj_k_half, flag_mea, Phi_T, N_par, U, Uab, fac_norm, deltau);
+        [Phi, w, O, E, W] = bos_stepwlk(Phi, N_wlk, N_sites, w, O, n_up, n_dn, E, W, K_old, Proj_k_half, flag_mea, Phi_T, N_par, U, Uab, fac_norm, E_T, deltau);
         if mod(j_step,itv_pc)==0
             [Phi, w, O]=pop_cntrl_bos(Phi, w, O, N_wlk, N_sites); % population control
         end
@@ -31,7 +31,7 @@ for i_blk=1:N_blk
             flag_mea=0;
         end
         % propagate the walkers:
-        [Phi, w, O, E_blk(i_blk), W_blk(i_blk)] = bos_stepwlk(Phi, N_wlk, N_sites, w, O, n_up, n_dn, E, W, K_old, Proj_k_half, flag_mea, Phi_T, N_par, U, Uab, fac_norm, deltau);
+        [Phi, w, O, E_blk(i_blk), W_blk(i_blk)] = bos_stepwlk(Phi, N_wlk, N_sites, w, O, n_up, n_dn, E_blk(i_blk), W_blk(i_blk), K_old, Proj_k_half, flag_mea, Phi_T, N_par, U, Uab, fac_norm, E_T, deltau);
         if mod(j_step,itv_pc)==0
             [Phi, w, O]=pop_cntrl_bos(Phi, w, O, N_wlk, N_sites); % population control
         end
@@ -46,7 +46,7 @@ for i_blk=1:N_blk
     E_blk(i_blk)=E_blk(i_blk)/W_blk(i_blk);
     display(strcat('E(',int2str(i_blk),')=',num2str(real(E_blk(i_blk)))))
 end
-
+delete(p);
 %% Results
 E=real(E_blk);
 E_ave=mean(E)

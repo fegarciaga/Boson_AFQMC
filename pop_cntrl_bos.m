@@ -5,7 +5,8 @@ function [Phi, w, O]=pop_cntrl_bos(Phi, w, O, N_wlk, N_sites)
     new_O=zeros(N_wlk,1);
     % scaling factor to bring the current total weight back to the original level (=N_wlk)
     d=N_wlk/sum(w);
-    % start the "comb" at a random position to avoid bias against the first walker
+%     display(sum(w));
+%     start the "comb" at a random position to avoid bias against the first walker
     sum_w=-rand;
     n_wlk=0;
     %% Apply the comb
